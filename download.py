@@ -60,7 +60,7 @@ def getGTData( search_query , date, geo, q, cmpt, cid  , export, reqId ) :
     connector.download_report( ( search_query ) 
 			   , date = date
                            , geo = geo
-                           ,q = 'garmin', cmpt = cmpt, cid = cid, export = export, reqId = reqId 
+                           ,q = q, cmpt = cmpt, cid = cid, export = export, reqId = reqId 
     )
     rsp=connector.getData()
     #print rsp
