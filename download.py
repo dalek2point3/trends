@@ -44,8 +44,9 @@ def getGTData( search_query , date, geo, q, cmpt, cid  , export, reqId ) :
     fnametag = search_query + "_suburban"
     if cid == "GEO_MAP_ANIMATION_0_2":
         fnametag= search_query + "_metro"
-    
-    
+
+    q = search_query
+
     print "search_query  ",search_query
     print "date          ",date
     print "geo           ",geo
@@ -97,7 +98,6 @@ def getGTData( search_query , date, geo, q, cmpt, cid  , export, reqId ) :
 
     print "File saved: %s " % ( fnametag + '_google_report.csv' )
 
-#def getGoogleTrendData( search_queries = ["garmin"], date="all", geo="all" , q='garmin', cmpt = 'q', cid  = "GEO_MAP_ANIMATION_0_1",  export = "6", reqId ='0' ) :
 def getGoogleTrendData( search_queries , date, geo , q, cmpt, cid,  export, reqId ) :
 
     for search_term in progressbar( search_queries, "Downloading: ", 40 ):
@@ -109,7 +109,7 @@ def getGoogleTrendData( search_queries , date, geo , q, cmpt, cid,  export, reqI
 
 if __name__=="__main__":
 
-    list_of_queries = ["google+maps"]
+    list_of_queries = ["airbnb", "zillow"]
     
     search_queries = list_of_queries
     date="all"
@@ -125,7 +125,6 @@ if __name__=="__main__":
     if is_metro == 'y':
         cid = "GEO_MAP_ANIMATION_0_2"
         reqId = '1'
-    
     
     # Remove duplicate entries in the list if there are any...
     list_of_queries = list( set( list_of_queries ) )
