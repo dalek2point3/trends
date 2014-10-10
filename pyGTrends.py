@@ -65,7 +65,7 @@ class pyGTrends( object ):
         self.opener.open( self.url_CookieCheck )
 	self.opener.open( self.url_PrefCookie )
         
-    def download_report( self, keywords, date='all', geo='all', q='garmin', cmpt = 'q', cid= "GEO_MAP_ANIMATION_0_1", export="6", reqId='0' ):
+    def download_report( self, keywords, date='all', geo='all', q='goog', cmpt = 'q', cid= "GEO_MAP_ANIMATION_0_1", export="6", reqId='0' ):
         """
         download a specific report
         date, geo, geor, graph, sort, scale and sa

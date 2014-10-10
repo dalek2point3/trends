@@ -5,8 +5,11 @@ import re
 import json
 from pprint import pprint
 
-google_username = raw_input("Google username: ")
-google_password = getpass.getpass("Google password: ")
+# google_username = raw_input("Google username: ")
+# google_password = getpass.getpass("Google password: ")
+
+google_username = "eigenboy"
+google_password = "quark123"
 
 def read_csv_data( data ):
     """
@@ -35,10 +38,7 @@ def progressbar(it, prefix = "", size = 60):
     sys.stdout.write("\n")
     sys.stdout.flush()
 
-
-
-#def getGTData( search_query = "debt", date="all", geo="all", q='garmin', cmpt = 'q', cid = "GEO_MAP_ANIMATION_0_1" , export = "6", reqId ='0' ) :
-def getGTData( search_query , date, geo, q, cmpt, cid  , export, reqId ) :
+def getGTData( search_query , date, geo, cmpt, cid  , export, reqId ) :
     
     #output file name
     fnametag = search_query + "_suburban"
@@ -63,7 +63,7 @@ def getGTData( search_query , date, geo, q, cmpt, cid  , export, reqId ) :
                            ,q = q, cmpt = cmpt, cid = cid, export = export, reqId = reqId 
     )
     rsp=connector.getData()
-    #print rsp
+    print rsp
     #extract the json
     regex= 'animationResponse\((.+?)\);'
     pattern=re.compile(regex)
@@ -98,36 +98,34 @@ def getGTData( search_query , date, geo, q, cmpt, cid  , export, reqId ) :
 
     print "File saved: %s " % ( fnametag + '_google_report.csv' )
 
-def getGoogleTrendData( search_queries , date, geo , q, cmpt, cid,  export, reqId ) :
+def getGoogleTrendData( search_queries , date, geo , cmpt, cid,  export, reqId ) :
 
     for search_term in progressbar( search_queries, "Downloading: ", 40 ):
-        
-        getGTData(search_query = search_term, date = date, geo = geo, q='garmin', cmpt = 'q', cid  = cid,  export = export, reqId =reqId )
+        getGTData(search_query = search_term, date = date, geo = geo, cmpt = 'q', cid  = cid,  export = export, reqId =reqId )
 	#time.sleep(2)  # Delay for x seconds    
     return True
 
 
 if __name__=="__main__":
 
-    list_of_queries = ["airbnb", "zillow"]
+    list_of_queries = ["airbnb"]
     
     search_queries = list_of_queries
     date="all"
-    geo="US"
-    q='garmin'
+    geo="all"
     cmpt = 'q'
     cid  = "GEO_MAP_ANIMATION_0_1"
     export = "6"
     reqId ='0'  
     
     #choice for metro
-    is_metro = raw_input("Metro(y/n): ")
-    if is_metro == 'y':
-        cid = "GEO_MAP_ANIMATION_0_2"
-        reqId = '1'
+    # is_metro = raw_input("Metro(y/n): ")
+    # if is_metro == 'y':
+    #    cid = "GEO_MAP_ANIMATION_0_2"
+    #    reqId = '1'
     
     # Remove duplicate entries in the list if there are any...
     list_of_queries = list( set( list_of_queries ) )
-    if getGoogleTrendData( search_queries , date, geo, q, cmpt, cid , export , reqId  ) :
+    if getGoogleTrendData( search_queries , date, geo, cmpt, cid , export , reqId  ) :
         print "Google Trend Data aquired."
         
