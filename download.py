@@ -11,6 +11,17 @@ from pprint import pprint
 google_username = "eigenboy"
 google_password = "quark123"
 
+def getcountry():
+    countries = []
+    with open("countries.json") as f:
+        contents = f.read().strip()
+        data = json.loads(contents)
+        for x in data["children"]:
+            countries.append(x["id"])
+
+    return countries
+
+
 def read_csv_data( data ):
     """
         Reads CSV from given path and Return list of dict with Mapping
@@ -41,7 +52,7 @@ def progressbar(it, prefix = "", size = 60):
 def getGTData( search_query , date, geo, cmpt, cid  , export, reqId ) :
     
     #output file name
-    fnametag = search_query + "_suburban"
+    fnametag = "data/" + search_query + "_" + geo + "_suburban"
     if cid == "GEO_MAP_ANIMATION_0_2":
         fnametag= search_query + "_metro"
 
@@ -101,22 +112,28 @@ def getGTData( search_query , date, geo, cmpt, cid  , export, reqId ) :
 def getGoogleTrendData( search_queries , date, geo , cmpt, cid,  export, reqId ) :
 
     for search_term in progressbar( search_queries, "Downloading: ", 40 ):
-        getGTData(search_query = search_term, date = date, geo = geo, cmpt = 'q', cid  = cid,  export = export, reqId =reqId )
+        for geo in progressbar( countries, "Downloading: ", 40 ):
+            getGTData(search_query = search_term, date = date, geo = geo, cmpt = 'q', cid  = cid,  export = export, reqId =reqId )
 	#time.sleep(2)  # Delay for x seconds    
     return True
 
 
 if __name__=="__main__":
 
-    list_of_queries = ["airbnb"]
+    list_of_queries = ["google+maps"]
     
     search_queries = list_of_queries
+    # countries = getcountry()
+    countries = ["IN", "US", "DE"]
+
     date="all"
-    geo="all"
+    # geo=countries[2]
     cmpt = 'q'
     cid  = "GEO_MAP_ANIMATION_0_1"
     export = "6"
     reqId ='0'  
+
+
     
     #choice for metro
     # is_metro = raw_input("Metro(y/n): ")
