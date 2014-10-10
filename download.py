@@ -4,6 +4,7 @@ import csv, datetime, time, getpass, sys
 import re
 import json
 from pprint import pprint
+import os.path
 
 # google_username = raw_input("Google username: ")
 # google_password = getpass.getpass("Google password: ")
@@ -58,14 +59,14 @@ def getGTData( search_query , date, geo, cmpt, cid  , export, reqId ) :
 
     q = search_query
 
-    print "search_query  ",search_query
-    print "date          ",date
-    print "geo           ",geo
-    print "q             ",q
-    print "cmpt          ",cmpt
-    print "cid           ",cid
-    print "export        ",export
-    print "reqId         ",reqId
+    # print "search_query  ",search_query
+    # print "date          ",date
+    # print "geo           ",geo
+    # print "q             ",q
+    # print "cmpt          ",cmpt
+    # print "cid           ",cid
+    # print "export        ",export
+    # print "reqId         ",reqId
     
     connector = pyGTrends( google_username, google_password )
     connector.download_report( ( search_query ) 
@@ -74,7 +75,7 @@ def getGTData( search_query , date, geo, cmpt, cid  , export, reqId ) :
                            ,q = q, cmpt = cmpt, cid = cid, export = export, reqId = reqId 
     )
     rsp=connector.getData()
-    print rsp
+    # print rsp
     #extract the json
     regex= 'animationResponse\((.+?)\);'
     pattern=re.compile(regex)
@@ -85,35 +86,40 @@ def getGTData( search_query , date, geo, cmpt, cid  , export, reqId ) :
         #print json_rsp1, "xxx\n"
         rsp = json.loads(json_rsp1)
         
-        print rsp['data'][0], "xxx\n"
-        print "first: ", rsp['data'][0]["frameData"], "xxx\n"
-        print "second: ", rsp["data"][0]["timeStr"], "xxx\n"
+        # print rsp['data'][0], "xxx\n"
+        # print "first: ", rsp['data'][0]["frameData"], "xxx\n"
+        # print "second: ", rsp["data"][0]["timeStr"], "xxx\n"
         
         with open( fnametag + '_google_report.csv', 'w') as csv_out:
             csv_writer = csv.writer( csv_out )
-            print len(rsp['data'])
+            # print len(rsp['data'])
             #outer loop
             
-            for index in range(len(rsp['data'])):
-                print rsp['data'][index]
-                col4=rsp["data"][index]["timeStr"]
+            try:
+                for index in range(len(rsp['data'])):
+                    # print rsp['data'][index]
+                    col4=rsp["data"][index]["timeStr"]
                 
-                for innerindex in range(len(rsp['data'][index]['frameData'])):
+                    for innerindex in range(len(rsp['data'][index]['frameData'])):
 
-                    col1=rsp['data'][index]['frameData'][innerindex][0]
-                    col2=rsp['data'][index]['frameData'][innerindex][1]
-                    col3=rsp['data'][index]['frameData'][innerindex][2]
+                        col1=rsp['data'][index]['frameData'][innerindex][0].encode('utf8')
+                        col2=rsp['data'][index]['frameData'][innerindex][1].encode('utf8')
+                        col3=rsp['data'][index]['frameData'][innerindex][2]
                     
-                    #print col1,col2,col3,col4
-                    csv_writer.writerow( [ col1 ] + [ col2 ]  + [ col3 ] + [ col4 ])
+                        #print col1,col2,col3,col4
+                        csv_writer.writerow( [ col1 ] + [ col2 ]  + [ col3 ] + [ col4 ])
+                print "File saved: %s " % ( fnametag + '_google_report.csv' )
+            except:
+                print "No data for " + geo
 
-    print "File saved: %s " % ( fnametag + '_google_report.csv' )
-
-def getGoogleTrendData( search_queries , date, geo , cmpt, cid,  export, reqId ) :
+def getGoogleTrendData( search_queries , date, countries , cmpt, cid,  export, reqId ) :
 
     for search_term in progressbar( search_queries, "Downloading: ", 40 ):
         for geo in progressbar( countries, "Downloading: ", 40 ):
-            getGTData(search_query = search_term, date = date, geo = geo, cmpt = 'q', cid  = cid,  export = export, reqId =reqId )
+            if os.path.exists("data/" + search_term + "_" + geo + "_suburban_google_report.csv"):
+                pass
+            else:
+                getGTData(search_query = search_term, date = date, geo = geo, cmpt = 'q', cid  = cid,  export = export, reqId =reqId )
 	#time.sleep(2)  # Delay for x seconds    
     return True
 
@@ -123,8 +129,9 @@ if __name__=="__main__":
     list_of_queries = ["google+maps"]
     
     search_queries = list_of_queries
-    # countries = getcountry()
-    countries = ["IN", "US", "DE"]
+    countries = getcountry()
+    # countries = ["IN", "US", "DE"]
+    # countries = ["BR"]
 
     date="all"
     # geo=countries[2]
@@ -143,6 +150,6 @@ if __name__=="__main__":
     
     # Remove duplicate entries in the list if there are any...
     list_of_queries = list( set( list_of_queries ) )
-    if getGoogleTrendData( search_queries , date, geo, cmpt, cid , export , reqId  ) :
+    if getGoogleTrendData( search_queries , date, countries, cmpt, cid , export , reqId  ) :
         print "Google Trend Data aquired."
         
