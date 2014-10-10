@@ -9,9 +9,6 @@ import os.path
 # google_username = raw_input("Google username: ")
 # google_password = getpass.getpass("Google password: ")
 
-google_username = "eigenboy"
-google_password = "quark123"
-
 def getcountry():
     countries = []
     with open("countries.json") as f:
